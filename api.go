@@ -7,9 +7,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ApiServer struct{ listenAddr string }
 type apiFunc func(http.ResponseWriter, *http.Request) error
 type ApiError struct{ Error string }
+type ApiServer struct{ listenAddr string }
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	w.WriteHeader(status)
@@ -34,9 +34,10 @@ func (server *ApiServer) Run() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/account", makeHTTPHandler(server.handleAccount))
+	http.ListenAndServe(server.listenAddr, router)
 }
 
-func (server *ApiServer) handleAccount(w *http.ResponseWriter, r *http.Request) error {
+func (server *ApiServer) handleAccount(rw *http.ResponseWriter, req *http.Request) error {
 	return nil
 }
 
