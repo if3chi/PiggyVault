@@ -2,14 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
-type apiFunc func(http.ResponseWriter, *http.Request) error
 type ApiError struct{ Error string }
 type ApiServer struct{ listenAddr string }
+type apiFunc func(http.ResponseWriter, *http.Request) error
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
 	w.WriteHeader(status)
@@ -34,6 +35,10 @@ func (server *ApiServer) Run() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/account", makeHTTPHandler(server.handleAccount))
+	router.HandleFunc("/get-account", makeHTTPHandler(server.handleGetAccount))
+
+	log.Println("Server running on port:", server.listenAddr)
+
 	http.ListenAndServe(server.listenAddr, router)
 }
 
