@@ -37,26 +37,26 @@ func (server *ApiServer) Run() {
 	http.ListenAndServe(server.listenAddr, router)
 }
 
-func (server *ApiServer) handleAccount(rw *http.ResponseWriter, req *http.Request) error {
+func (server *ApiServer) handleAccount(rw http.ResponseWriter, req *http.Request) error {
 	return nil
 }
 
-func (server *ApiServer) handleGetAccount(rw *http.ResponseWriter, req *http.Request) error {
+func (server *ApiServer) handleGetAccount(rw http.ResponseWriter, req *http.Request) error {
 	return nil
 }
 
-func (server *ApiServer) handleCreateAccount(rw *http.ResponseWriter, req *http.Request) error {
+func (server *ApiServer) handleCreateAccount(rw http.ResponseWriter, req *http.Request) error {
 	return nil
 }
 
-func (server *ApiServer) handleUpdateAccount(rw *http.ResponseWriter, req *http.Request) error {
+func (server *ApiServer) handleUpdateAccount(rw http.ResponseWriter, req *http.Request) error {
 	return nil
 }
 
-func (server *ApiServer) handleDeleteAccount(rw *http.ResponseWriter, req *http.Request) error {
+func (server *ApiServer) handleDeleteAccount(rw http.ResponseWriter, req *http.Request) error {
 	return nil
 }
 
-func (server *ApiServer) handleTransfer(rw *http.ResponseWriter, req *http.Request) error {
+func (server *ApiServer) handleTransfer(rw http.ResponseWriter, req *http.Request) error {
 	return nil
 }
