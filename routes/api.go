@@ -1,10 +1,12 @@
-package main
+package routes
 
 import (
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/if3chi/PiggyVault/model"
 
 	"github.com/gorilla/mux"
 )
@@ -65,7 +67,7 @@ func (server *ApiServer) handleAccount(rw http.ResponseWriter, req *http.Request
 }
 
 func (server *ApiServer) handleListAccounts(rw http.ResponseWriter, req *http.Request) error {
-	accounts := &Account{}
+	accounts := &model.Account{}
 
 	return WriteJSON(rw, http.StatusOK, accounts)
 }
