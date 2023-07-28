@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -35,19 +36,44 @@ func (server *ApiServer) Run() {
 	router := mux.NewRouter()
 
 	router.HandleFunc("/account", makeHTTPHandler(server.handleAccount))
-	router.HandleFunc("/get-account", makeHTTPHandler(server.handleGetAccount))
+	router.HandleFunc("/account/{id}", makeHTTPHandler(server.handleGetAccount))
+	router.HandleFunc("/account/transfer", makeHTTPHandler(server.handleTransfer))
 
-	log.Println("Server running on port:", server.listenAddr)
+	log.Println("Server running on port", server.listenAddr)
 
 	http.ListenAndServe(server.listenAddr, router)
 }
 
 func (server *ApiServer) handleAccount(rw http.ResponseWriter, req *http.Request) error {
-	return nil
+	if req.Method == "GET" {
+		return server.handleListAccounts(rw, req)
+	}
+
+	if req.Method == "POST" {
+		return server.handleCreateAccount(rw, req)
+	}
+
+	if req.Method == "PUT" {
+		return server.handleUpdateAccount(rw, req)
+	}
+
+	if req.Method == "DELETE" {
+		return server.handleDeleteAccount(rw, req)
+	}
+
+	return fmt.Errorf("method not allowed %s", req.Method)
+}
+
+func (server *ApiServer) handleListAccounts(rw http.ResponseWriter, req *http.Request) error {
+	accounts := &Account{}
+
+	return WriteJSON(rw, http.StatusOK, accounts)
 }
 
 func (server *ApiServer) handleGetAccount(rw http.ResponseWriter, req *http.Request) error {
-	return nil
+	account := mux.Vars(req)["id"]
+
+	return WriteJSON(rw, http.StatusOK, account)
 }
 
 func (server *ApiServer) handleCreateAccount(rw http.ResponseWriter, req *http.Request) error {
