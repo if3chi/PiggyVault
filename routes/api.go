@@ -6,18 +6,23 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/if3chi/PiggyVault/db"
 	"github.com/if3chi/PiggyVault/model"
 
 	"github.com/gorilla/mux"
 )
 
 type ApiError struct{ Error string }
-type ApiServer struct{ listenAddr string }
+type ApiServer struct {
+	listenAddr string
+	store      db.Storage
+}
+
 type apiFunc func(http.ResponseWriter, *http.Request) error
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
-	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 
 	return json.NewEncoder(w).Encode(v)
 }
@@ -30,8 +35,8 @@ func makeHTTPHandler(f apiFunc) http.HandlerFunc {
 	}
 }
 
-func NewApiServer(listenAddr string) *ApiServer {
-	return &ApiServer{listenAddr: listenAddr}
+func NewApiServer(listenAddr string, store db.Storage) *ApiServer {
+	return &ApiServer{listenAddr: listenAddr, store: store}
 }
 
 func (server *ApiServer) Run() {
