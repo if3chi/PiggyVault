@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/if3chi/PiggyVault/db"
-	// "github.com/if3chi/PiggyVault/routes"
+	"github.com/if3chi/PiggyVault/routes"
 )
 
 func main() {
@@ -15,8 +15,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	fmt.Printf("%+v\n", db)
+	if err := db.Init(); err != nil {
+		log.Fatal(err.Error())
+	}
 
-	// server := routes.NewApiServer(":3000", db)
-	// server.Run()
+	server := routes.NewApiServer(":3000", db)
+	server.Run()
 }
