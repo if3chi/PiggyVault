@@ -53,7 +53,19 @@ func (server *ApiServer) handleGetAccount(rw http.ResponseWriter, req *http.Requ
 }
 
 func (server *ApiServer) handleCreateAccount(rw http.ResponseWriter, req *http.Request) error {
-	return nil
+	creatAcctRequest := new(model.CreateAccuntRequest)
+
+	if err := json.NewDecoder(req.Body).Decode(creatAcctRequest); err != nil {
+		return err
+	}
+
+	account := model.NewAccount(creatAcctRequest.FirstName, creatAcctRequest.LastName)
+
+	if err := server.store.CreateAccount(account); err != nil {
+		return err
+	}
+
+	return WriteJSON(rw, http.StatusOK, account)
 }
 
 func (server *ApiServer) handleUpdateAccount(rw http.ResponseWriter, req *http.Request) error {

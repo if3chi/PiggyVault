@@ -3,9 +3,8 @@ package db
 import (
 	"database/sql"
 
-	_ "github.com/lib/pq"
-
 	"github.com/if3chi/PiggyVault/model"
+	_ "github.com/lib/pq"
 )
 
 type Storage interface {
@@ -54,7 +53,12 @@ func NewPostgresStore() (*PostgresStore, error) {
 	return &PostgresStore{db: db}, err
 }
 
-func (s *PostgresStore) CreateAccount(*model.Account) error {
+func (s *PostgresStore) CreateAccount(account *model.Account) error {
+	_, err := s.db.Query(model.Create(account))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

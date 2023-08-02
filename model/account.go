@@ -22,10 +22,18 @@ type Account struct {
 
 func NewAccount(firstName, lastName string) *Account {
 	return &Account{
-		ID:        rand.Intn(10000),
 		FirstName: firstName,
 		LastName:  lastName,
 		Number:    int64(rand.Intn(1000000)),
 		CreatedAt: time.Now().UTC(),
 	}
+}
+
+func Create(request *Account) (string, string, string, int64, int64, time.Time) {
+	query := `insert into account (firstname, lastname, number, balance, created_at)
+	values(?,?,?,?,?)`
+
+	return query,
+		request.FirstName, request.LastName,
+		request.Number, request.Balance, request.CreatedAt
 }
