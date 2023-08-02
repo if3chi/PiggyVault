@@ -22,7 +22,7 @@ type apiFunc func(http.ResponseWriter, *http.Request) error
 
 func (server *ApiServer) handleAccount(rw http.ResponseWriter, req *http.Request) error {
 	if req.Method == "GET" {
-		return server.handleListAccounts(rw, req)
+		return server.handleListAccount(rw, req)
 	}
 
 	if req.Method == "POST" {
@@ -40,8 +40,12 @@ func (server *ApiServer) handleAccount(rw http.ResponseWriter, req *http.Request
 	return fmt.Errorf("method not allowed %s", req.Method)
 }
 
-func (server *ApiServer) handleListAccounts(rw http.ResponseWriter, req *http.Request) error {
-	accounts := &model.Account{}
+func (server *ApiServer) handleListAccount(rw http.ResponseWriter, req *http.Request) error {
+	accounts, err := server.store.GetAccounts()
+
+	if err != nil {
+		return err
+	}
 
 	return WriteJSON(rw, http.StatusOK, accounts)
 }

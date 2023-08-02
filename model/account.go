@@ -29,6 +29,10 @@ func NewAccount(firstName, lastName string) *Account {
 	}
 }
 
+func All() string {
+	return `select * from account`
+}
+
 func Create(request *Account) (string, string, string, int64, int64, time.Time) {
 	query := `insert into account (firstname, lastname, number, balance, created_at)
 	values(?,?,?,?,?)`
