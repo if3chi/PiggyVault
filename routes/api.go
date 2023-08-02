@@ -20,37 +20,6 @@ type ApiServer struct {
 
 type apiFunc func(http.ResponseWriter, *http.Request) error
 
-func WriteJSON(w http.ResponseWriter, status int, v any) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-
-	return json.NewEncoder(w).Encode(v)
-}
-
-func makeHTTPHandler(f apiFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := f(w, r); err != nil {
-			WriteJSON(w, http.StatusBadRequest, ApiError{Error: err.Error()})
-		}
-	}
-}
-
-func NewApiServer(listenAddr string, store db.Storage) *ApiServer {
-	return &ApiServer{listenAddr: listenAddr, store: store}
-}
-
-func (server *ApiServer) Run() {
-	router := mux.NewRouter()
-
-	router.HandleFunc("/account", makeHTTPHandler(server.handleAccount))
-	router.HandleFunc("/account/{id}", makeHTTPHandler(server.handleGetAccount))
-	router.HandleFunc("/account/transfer", makeHTTPHandler(server.handleTransfer))
-
-	log.Println("Server running on port", server.listenAddr)
-
-	http.ListenAndServe(server.listenAddr, router)
-}
-
 func (server *ApiServer) handleAccount(rw http.ResponseWriter, req *http.Request) error {
 	if req.Method == "GET" {
 		return server.handleListAccounts(rw, req)
@@ -97,4 +66,35 @@ func (server *ApiServer) handleDeleteAccount(rw http.ResponseWriter, req *http.R
 
 func (server *ApiServer) handleTransfer(rw http.ResponseWriter, req *http.Request) error {
 	return nil
+}
+
+func WriteJSON(w http.ResponseWriter, status int, v any) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	return json.NewEncoder(w).Encode(v)
+}
+
+func makeHTTPHandler(f apiFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := f(w, r); err != nil {
+			WriteJSON(w, http.StatusBadRequest, ApiError{Error: err.Error()})
+		}
+	}
+}
+
+func NewApiServer(listenAddr string, store db.Storage) *ApiServer {
+	return &ApiServer{listenAddr: listenAddr, store: store}
+}
+
+func (server *ApiServer) Run() {
+	router := mux.NewRouter()
+
+	router.HandleFunc("/account", makeHTTPHandler(server.handleAccount))
+	router.HandleFunc("/account/{id}", makeHTTPHandler(server.handleGetAccount))
+	router.HandleFunc("/account/transfer", makeHTTPHandler(server.handleTransfer))
+
+	log.Println("Server running on port", server.listenAddr)
+
+	http.ListenAndServe(server.listenAddr, router)
 }
