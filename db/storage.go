@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/if3chi/PiggyVault/model"
 	_ "github.com/lib/pq"
@@ -55,10 +56,12 @@ func NewPostgresStore() (*PostgresStore, error) {
 }
 
 func (s *PostgresStore) CreateAccount(account *model.Account) error {
-	_, err := s.db.Query(model.Create(account))
+	resp, err := s.db.Query(model.Create(account))
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("%+v\n", resp)
 
 	return nil
 }

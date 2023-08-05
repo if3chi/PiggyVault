@@ -13,6 +13,7 @@ import (
 )
 
 type ApiError struct{ Error string }
+
 type ApiServer struct {
 	listenAddr string
 	store      db.Storage
@@ -59,12 +60,11 @@ func (server *ApiServer) handleGetAccount(rw http.ResponseWriter, req *http.Requ
 func (server *ApiServer) handleCreateAccount(rw http.ResponseWriter, req *http.Request) error {
 	creatAcctRequest := new(model.CreateAccountRequest)
 
-	if err := json.NewDecoder(req.Body).Decode(&creatAcctRequest); err != nil {
+	if err := json.NewDecoder(req.Body).Decode(creatAcctRequest); err != nil {
 		return err
 	}
 
 	account := model.NewAccount(creatAcctRequest.FirstName, creatAcctRequest.LastName)
-
 	if err := server.store.CreateAccount(account); err != nil {
 		return err
 	}
