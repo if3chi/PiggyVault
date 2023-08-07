@@ -36,6 +36,10 @@ func All() string {
 	return `select * from account`
 }
 
+func Where(key, param string) (string, string, string) {
+	return `select * from account where $1 = $2`, key, param
+}
+
 func Create(request *Account) (string, string, string, int64, int64, time.Time, time.Time) {
 	query := `
 	insert into account 
