@@ -70,7 +70,7 @@ func (s *PostgresStore) UpdateAccount(*model.Account) error {
 	return nil
 }
 
-func (s *PostgresStore) GetAccountByID(id string) (*model.Account, error) {
+func (s *PostgresStore) GetAccountByID(id int) (*model.Account, error) {
 	rows, err := s.db.Query(model.Where("id", id))
 
 	if err != nil {
@@ -81,7 +81,7 @@ func (s *PostgresStore) GetAccountByID(id string) (*model.Account, error) {
 		return scanAccount(rows)
 	}
 
-	return nil, fmt.Errorf("Account %d not found")
+	return nil, fmt.Errorf("account %d not found", id)
 }
 
 func (s *PostgresStore) GetAccounts() ([]*model.Account, error) {

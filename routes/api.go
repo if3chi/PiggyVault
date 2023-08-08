@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/if3chi/PiggyVault/db"
 	"github.com/if3chi/PiggyVault/model"
@@ -12,7 +13,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type ApiError struct{ Error string }
+type ApiError struct {
+	Error string `json:"error"`
+}
 
 type ApiServer struct {
 	listenAddr string
@@ -52,7 +55,18 @@ func (server *ApiServer) handleListAccount(rw http.ResponseWriter, req *http.Req
 }
 
 func (server *ApiServer) handleGetAccount(rw http.ResponseWriter, req *http.Request) error {
-	account := mux.Vars(req)["id"]
+	idStr := mux.Vars(req)["id"]
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		return fmt.Errorf("invalid ID: %s", idStr)
+	}
+
+	account, err := server.store.GetAccountByID(id)
+
+	if err != nil {
+		return err
+	}
 
 	return WriteJSON(rw, http.StatusOK, account)
 }
